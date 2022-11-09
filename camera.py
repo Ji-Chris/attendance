@@ -4,24 +4,44 @@ import numpy as np
 import os
 
 path = 'Student_Images'
-def setup():
-    os.mkdir(path)
-    print(f"Created directory {path}")
+def setup(students : list[str]):
+    if not os.path.isdir(path):
+        print(f"Creating directory {path}")
+        os.mkdir(path)
+    for student in students:
+        student_path = os.path.join(path, student)
+        if not os.path.isdir(student_path):
+            print(f"Creating directory {student_path}")
+            os.mkdir(student_path)
     
 
 
+attendance = set()
+
 def main():
+
+    global attendance
+    
     images = []
-    classes = []  # list for storing names
+    classes = []
     myList = os.listdir(path)
     if len(myList) == 0:
         print("No images found")
     # print(myList)
 
-    for face in myList:
-        current = cv2.imread(f'{path}/{face}')
-        images.append(current)
-        classes.append(face[:-4])
+    for name in myList:
+        name_path = os.path.join(path, name)
+        img_paths = os.listdir(name_path)
+        for img_path in img_paths:
+            img = cv2.imread(os.path.join(name_path, img_path))
+            images.append(img)
+            classes.append(name)
+    
+    
+    # for face in myList:
+    #     current = cv2.imread(f'{path}/{face}')
+    #     images.append(current)
+    #     classes.append(face[:-4])
 
 
     # print(classes)
@@ -62,6 +82,12 @@ def main():
                 y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
                 cv2.putText(frame, name, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+                attendance.add(name)
 
         cv2.imshow('Camera:', frame)
-        cv2.waitKey(1)
+        key = cv2.waitKey(1)
+        if key == ord('z'):
+            break
+    
+    import excel
+    excel.save_attendance(attendance)
