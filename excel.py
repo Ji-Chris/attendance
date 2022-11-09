@@ -35,11 +35,10 @@ def save_attendance(attendance: Set[str]):
     row_n = 1
     for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
         row_n += 1
-        for cell in row:
-            if cell in attendance:
-                ws.cell(row=row_n, column=column_n).value = PRESENT_STRING
-            else:
-                ws.cell(row=row_n, column=column_n).value = ABSENT_STRING
+        if row[0] in attendance:
+            ws.cell(row=row_n, column=column_n).value = PRESENT_STRING
+        else:
+            ws.cell(row=row_n, column=column_n).value = ABSENT_STRING
 
     # Save workbook
     wb.save(SAVE_PATH)
