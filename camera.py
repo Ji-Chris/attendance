@@ -3,8 +3,10 @@ import face_recognition
 import numpy as np
 import os
 
+from typing import List
+
 path = 'Student_Images'
-def setup(students : list[str]):
+def setup(students : List[str]):
     if not os.path.isdir(path):
         print(f"Creating directory {path}")
         os.mkdir(path)

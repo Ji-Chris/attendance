@@ -2,6 +2,7 @@
 import openpyxl
 import datetime
 import os
+from typing import Set, List
 
 SAVE_PATH = "attendance.xlsx"
 WORKSHEET_NAME = "Automatic Attendance"
@@ -9,14 +10,13 @@ WORKSHEET_NAME = "Automatic Attendance"
 wb = None
 ws = None
 
-PRESENT_STRING = "P" 
+PRESENT_STRING = "P"
 ABSENT_STRING = "A"
 
-def save_attendance(attendance : set[str]):
-    
+def save_attendance(attendance: Set[str]):
     global wb
     global ws
-    
+
     # Read the excel file
     wb = openpyxl.load_workbook(SAVE_PATH)
     ws = wb[WORKSHEET_NAME]
@@ -31,21 +31,21 @@ def save_attendance(attendance : set[str]):
             column_n += 1
     else:
         ws.cell(1, column_n, today)
-    
+
     row_n = 1
     for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
-        row_n+=1
+        row_n += 1
         for cell in row:
             if cell in attendance:
                 ws.cell(row=row_n, column=column_n).value = PRESENT_STRING
             else:
                 ws.cell(row=row_n, column=column_n).value = ABSENT_STRING
-    
+
     # Save workbook
     wb.save(SAVE_PATH)
 
-def setup(students : list[str]):
-    
+
+def setup(students: List[str]):
     wb = openpyxl.Workbook(SAVE_PATH)
     ws = wb.create_sheet(WORKSHEET_NAME)
 
@@ -53,7 +53,5 @@ def setup(students : list[str]):
     ws.append(["Name"])
     for i, student in enumerate(students):
         ws.append([student])
-    
-    wb.save(SAVE_PATH)
 
-    
+    wb.save(SAVE_PATH)
