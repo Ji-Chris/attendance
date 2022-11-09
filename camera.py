@@ -92,4 +92,5 @@ def main():
             break
     
     import excel
+    # print(attendance)
     excel.save_attendance(attendance)
